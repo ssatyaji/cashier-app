@@ -3,6 +3,10 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
 
+  server: {
+    port: 8000 // default: 3000
+  },
+
   //disable render from server
   ssr: false,
 

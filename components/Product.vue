@@ -74,7 +74,8 @@ export default {
   methods: {
     ...mapActions({
       updateCategoryId: 'products/updateCategoryId',
-      addToCart: 'carts/addToCart'
+      addToCart: 'carts/addToCart',
+      fetchProducts: 'products/fetchProducts',
     }),
     resetSearchCategory(){
       this.categoryId = false
@@ -111,6 +112,9 @@ export default {
           }, 1000);
       }
   },
+  mounted() {
+    this.fetchProducts()
+  }
 };
 </script>
 
