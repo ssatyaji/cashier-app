@@ -9,21 +9,26 @@
                             name="fullName"
                             label="Full Name"
                             type="text" 
+                            :rules="rules.fullName"
                             v-model="form.fullName"/>
                         <v-text-field
                             name="email"
                             label="Email"
                             type="email" 
-                            v-model="form.email"/>
+                            :rules="rules.email"
+                            v-model="form.email"
+                            @keyup="checkEmail"/>
                         <v-text-field
                             name="password"
                             label="Password"
                             type="password" 
+                            :rules="rules.password"
                             v-model="form.password"/>
                         <v-text-field
                             name="retype_password"
                             label="Re-Password"
                             type="password" 
+                            :rules="rules.retype_password"
                             v-model="form.retype_password"/>
                     </v-form>
                 </v-card-text>
@@ -43,22 +48,46 @@ import axios from 'axios'
 export default({
     data() {
         return{
+            emailExsit: false,
             form: {
                 fullName: '',
                 email: '',
                 password: '',
                 retype_password: '',
+            },
+            rules: {
+                fullName: [
+                    v => !!v || 'Fullname is required',
+                ],
+                email: [
+                    v => !!v || 'Email is required',
+                    v => /.+@.+/.test(v) || 'Email invalid',
+                    v => !!this.emailExsit || 'Email already exist',
+                ],
+                password: [
+                    v => !!v || 'Password is required',
+                    v => v.length >= 6 || 'Password must be at least 6 characters',
+                ],
+                retype_password: [
+                    v => v === this.form.password || 'Re-Password must be same with password',
+                ],
             }
         }
     },
     methods: {
-        onSubmit() {
-            console.log(this.form)
-            axios.post('http://localhost:3000/auth/register', this.form).then((response) => {
+        checkEmail() {
+            axios.post('http://localhost:3000/auth/check-email', this.form).then((response) => {
                 console.log(response.data)
+                this.emailExsit = false
             }).catch((err) => {
                 console.log(err)
+                this.emailExsit = true
             });
+        },
+        onSubmit() {
+            axios.post('http://localhost:3000/auth/register', this.form).then((response) => {
+                this.$router.push('/login')
+            })
         }
     }
 })

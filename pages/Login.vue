@@ -8,19 +8,43 @@
                         <v-text-field
                             name="email"
                             label="Email"
-                            type="email" />
+                            type="email" 
+                            v-model="form.email"/>
                         <v-text-field
                             name="password"
                             label="Password"
-                            type="password" />
+                            type="password"
+                            v-model="form.password" />
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary">Login</v-btn>
+                    <v-btn @click="onSubmit" color="primary">Login</v-btn>
                 </v-card-actions>
             </v-card>
             <p>Sudah punya akun ? <v-btn to="/register" plain>Daftar disini</v-btn></p>
         </v-col>
     </v-row>
 </template>
+
+<script>
+import axios from 'axios'
+
+export default ({
+    data() {
+        return {
+            form: {
+                email: '',
+                password: '',
+            }
+        }
+    },
+    methods: {
+        onSubmit() {
+            axios.post('http://localhost:3000/auth/login', this.form).then((response) => {
+                console.log(response.data)
+            })
+        }
+    }
+})
+</script>
