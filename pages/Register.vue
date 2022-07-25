@@ -34,7 +34,12 @@
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn @click="onSubmit" color="primary">Register</v-btn>
+                    <v-btn @click="onSubmit" color="primary" :disabled="isDisabled">
+                    <span v-if="!isDisabled">Register</span>
+                    <v-progress-circular 
+                    v-else color="deep-orange lighten-2" indeterminate>
+                    </v-progress-circular>
+                    </v-btn>
                 </v-card-actions>
             </v-card>
             <p>Sudah punya akun ? <v-btn to="/login" plain>Login</v-btn></p>
@@ -49,6 +54,7 @@ export default({
     data() {
         return{
             emailExsit: false,
+            isDisabled: false,
             form: {
                 fullName: '',
                 email: '',
@@ -62,7 +68,7 @@ export default({
                 email: [
                     v => !!v || 'Email is required',
                     v => /.+@.+/.test(v) || 'Email invalid',
-                    v => !!this.emailExsit || 'Email already exist',
+                    // v => !!this.emailExsit || 'Email already exist',
                 ],
                 password: [
                     v => !!v || 'Password is required',
@@ -85,8 +91,13 @@ export default({
             });
         },
         onSubmit() {
+            this.isDisabled = true
             axios.post('http://localhost:3000/auth/register', this.form).then((response) => {
+                this.isDisabled = false
                 this.$router.push('/login')
+            })
+            .catch(err => {
+                this.isDisabled = false
             })
         }
     }
